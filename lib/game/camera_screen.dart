@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:SmileHelper/game/camera_view.dart';
 import 'package:SmileHelper/game/controller/getPredict.dart';
+import 'package:SmileHelper/game/countdown.dart';
+import 'package:SmileHelper/game/express_view.dart';
 import 'package:SmileHelper/game/mlkit/detector_view.dart';
 import 'package:SmileHelper/game/mlkit/message_view.dart';
 import 'package:SmileHelper/game/showStatusImage.dart';
@@ -9,7 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:SmileHelper/game/camera_view.dart';
+
 import 'package:SmileHelper/game/controller/scan_controller.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:logger/logger.dart';
@@ -37,7 +40,8 @@ class _ScreenState extends State<CameraScreen> {
           ),
           MessageView(), // 필요없다
           Showstatusimage(),
-
+          ExpressView(),
+          Countdown(),
           //Testmlkit(),
         ],
       ),

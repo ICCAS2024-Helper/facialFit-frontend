@@ -101,7 +101,8 @@ class _StageClearState extends State<StageClear> {
                     Get.to(StoryStage()); // StoryStage 페이지로 이동
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20), // 버튼의 패딩 설정
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 20), // 버튼의 패딩 설정
                     textStyle: TextStyle(fontSize: 15), // 텍스트 크기 설정
                   ),
                   child: Text('Stage'),
@@ -109,10 +110,11 @@ class _StageClearState extends State<StageClear> {
                 SizedBox(width: 20), // 간격 추가
                 ElevatedButton(
                   onPressed: () {
-                    Get.offAll(MainHome()); // MainHome 페이지로 이동
+                    Get.to(MainHome()); // MainHome 페이지로 이동
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20), // 버튼의 패딩 설정
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 20), // 버튼의 패딩 설정
                     textStyle: TextStyle(fontSize: 15), // 텍스트 크기 설정
                   ),
                   child: Text('Home'),
