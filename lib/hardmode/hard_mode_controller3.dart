@@ -31,9 +31,15 @@ class HardModeController3 extends GetxController {
   bool get isCapturing => _isCapturing.value;
   String get feedbackMessage => _feedbackMessage.value;
   int get totalExpressions => _totalExpressions.value;
-
+  RxString currentExpression = RxString('');
   final List<String> allExpressions = [
-    'SURPRISE', 'OPEN_MOUTH', 'BLINK', 'RAISE_EYEBROWS', 'PUFF_CHEEKS', 'PUCKER_LIPS', 'TEMP1'
+    'SURPRISE',
+    'OPEN_MOUTH',
+    'BLINK',
+    'RAISE_EYEBROWS',
+    'PUFF_CHEEKS',
+    'PUCKER_LIPS',
+    'TEMP1'
   ];
 
   final RxBool _showStartButton = RxBool(true);
@@ -84,13 +90,17 @@ class HardModeController3 extends GetxController {
   }
 
   void _selectRandomExpressions() {
-    _currentExpressions.value = (allExpressions.toList()..shuffle()).take(2).toList();
+    _currentExpressions.value =
+        (allExpressions.toList()..shuffle()).take(2).toList();
+    currentExpression.value =
+        _currentExpressions.value[_currentExpressionIndex.value];
     _currentExpressionIndex.value = 0;
     _correctExpressions.value = 0;
   }
 
   void _updateMessage() {
-    _message.value = '표정 ${_currentExpressionIndex.value + 1}: ${_currentExpressions[_currentExpressionIndex.value]}';
+    _message.value =
+        '표정 ${_currentExpressionIndex.value + 1}: ${_currentExpressions[_currentExpressionIndex.value]}';
   }
 
   void _startCountdown() {
@@ -119,7 +129,8 @@ class HardModeController3 extends GetxController {
       }
 
       final face = faces.first;
-      bool isExpressionCorrect = _validateExpression(face, _currentExpressions[_currentExpressionIndex.value]);
+      bool isExpressionCorrect = _validateExpression(
+          face, _currentExpressions[_currentExpressionIndex.value]);
 
       if (isExpressionCorrect) {
         _correctExpressions.value++;
@@ -168,6 +179,7 @@ class HardModeController3 extends GetxController {
       Get.off(() => StageFail3(result: result), arguments: result);
     }
   }
+
   bool _validateExpression(Face face, String expression) {
     switch (expression) {
       case 'SURPRISE':
@@ -196,37 +208,45 @@ class HardModeController3 extends GetxController {
   bool _isEyebrowRaised(Face face) {
     FaceContour? leftEyebrowTop = face.contours[FaceContourType.leftEyebrowTop];
     FaceContour? leftEye = face.contours[FaceContourType.leftEye];
-    FaceContour? rightEyebrowTop = face.contours[FaceContourType
-        .rightEyebrowTop];
+    FaceContour? rightEyebrowTop =
+        face.contours[FaceContourType.rightEyebrowTop];
     FaceContour? rightEye = face.contours[FaceContourType.rightEye];
 
-    if (leftEyebrowTop != null && leftEye != null && rightEyebrowTop != null &&
+    if (leftEyebrowTop != null &&
+        leftEye != null &&
+        rightEyebrowTop != null &&
         rightEye != null) {
       // 왼쪽 눈썹의 평균 y 좌표를 계산합니다
-      double leftEyebrowY = leftEyebrowTop.points.map((p) => p.y.toDouble())
-          .reduce((a, b) => a + b) / leftEyebrowTop.points.length;
+      double leftEyebrowY = leftEyebrowTop.points
+              .map((p) => p.y.toDouble())
+              .reduce((a, b) => a + b) /
+          leftEyebrowTop.points.length;
 
       // 오른쪽 눈썹의 평균 y 좌표를 계산합니다
-      double rightEyebrowY = rightEyebrowTop.points.map((p) => p.y.toDouble())
-          .reduce((a, b) => a + b) / rightEyebrowTop.points.length;
+      double rightEyebrowY = rightEyebrowTop.points
+              .map((p) => p.y.toDouble())
+              .reduce((a, b) => a + b) /
+          rightEyebrowTop.points.length;
 
       // 왼쪽 눈의 평균 y 좌표를 계산합니다
-      double leftEyeY = leftEye.points.map((p) => p.y.toDouble()).reduce((a,
-          b) => a + b) / leftEye.points.length;
+      double leftEyeY =
+          leftEye.points.map((p) => p.y.toDouble()).reduce((a, b) => a + b) /
+              leftEye.points.length;
 
       // 오른쪽 눈의 평균 y 좌표를 계산합니다
-      double rightEyeY = rightEye.points.map((p) => p.y.toDouble()).reduce((a,
-          b) => a + b) / rightEye.points.length;
+      double rightEyeY =
+          rightEye.points.map((p) => p.y.toDouble()).reduce((a, b) => a + b) /
+              rightEye.points.length;
 
       // 눈썹과 눈 사이의 거리를 계산합니다
       double leftEyebrowEyeDistance = leftEyeY - leftEyebrowY;
       double rightEyebrowEyeDistance = rightEyeY - rightEyebrowY;
 
       // 얼굴 높이에 대한 상대적 거리를 계산합니다
-      double relativeLeftDistance = leftEyebrowEyeDistance /
-          face.boundingBox.height;
-      double relativeRightDistance = rightEyebrowEyeDistance /
-          face.boundingBox.height;
+      double relativeLeftDistance =
+          leftEyebrowEyeDistance / face.boundingBox.height;
+      double relativeRightDistance =
+          rightEyebrowEyeDistance / face.boundingBox.height;
 
       // 임계값 설정
       double threshold = 0.09; // 얼굴 높이의 9%를 임계값으로 설정
@@ -235,8 +255,8 @@ class HardModeController3 extends GetxController {
       print('Right Eyebrow-Eye Distance: $relativeRightDistance');
 
       return (relativeLeftDistance > threshold) &&
-          (relativeRightDistance > threshold)
-          && ((relativeLeftDistance - relativeRightDistance).abs() < 0.004);
+          (relativeRightDistance > threshold) &&
+          ((relativeLeftDistance - relativeRightDistance).abs() < 0.004);
     }
     return false;
   }
@@ -264,30 +284,27 @@ class HardModeController3 extends GetxController {
 
     if (leftCheek != null && rightCheek != null && noseBridge != null) {
       // 양 볼의 가장 바깥쪽 점을 찾습니다
-      Point<int> leftOuterPoint = leftCheek.points.reduce((curr, next) =>
-      curr.x < next.x ? curr : next);
-      Point<int> rightOuterPoint = rightCheek.points.reduce((curr, next) =>
-      curr.x > next.x ? curr : next);
+      Point<int> leftOuterPoint = leftCheek.points
+          .reduce((curr, next) => curr.x < next.x ? curr : next);
+      Point<int> rightOuterPoint = rightCheek.points
+          .reduce((curr, next) => curr.x > next.x ? curr : next);
 
       // 코의 중앙점을 찾습니다
       Point<int> noseCenter = noseBridge.points[noseBridge.points.length ~/ 2];
 
       // 볼의 너비를 계산합니다
-      double cheekWidth = (rightOuterPoint.x - leftOuterPoint.x)
-          .abs()
-          .toDouble();
+      double cheekWidth =
+          (rightOuterPoint.x - leftOuterPoint.x).abs().toDouble();
 
       // 코에서 양 볼까지의 거리를 계산합니다
-      double leftCheekDistance = (noseCenter.x - leftOuterPoint.x)
-          .abs()
-          .toDouble();
-      double rightCheekDistance = (rightOuterPoint.x - noseCenter.x)
-          .abs()
-          .toDouble();
+      double leftCheekDistance =
+          (noseCenter.x - leftOuterPoint.x).abs().toDouble();
+      double rightCheekDistance =
+          (rightOuterPoint.x - noseCenter.x).abs().toDouble();
 
       // 볼의 대칭성을 확인합니다
-      double cheekSymmetry = (leftCheekDistance - rightCheekDistance).abs() /
-          cheekWidth;
+      double cheekSymmetry =
+          (leftCheekDistance - rightCheekDistance).abs() / cheekWidth;
 
       // 임계값 설정
       double widthThreshold = 0.41; // 얼굴 너비 대비 볼 너비의 임계값
@@ -324,17 +341,17 @@ class HardModeController3 extends GetxController {
     FaceLandmark? upperLip = face.landmarks[FaceLandmarkType.noseBase];
     FaceLandmark? lowerLip = face.landmarks[FaceLandmarkType.bottomMouth];
 
-    if (leftMouth != null && rightMouth != null && upperLip != null &&
+    if (leftMouth != null &&
+        rightMouth != null &&
+        upperLip != null &&
         lowerLip != null) {
       // 입 너비 계산
-      double mouthWidth = (rightMouth.position.x - leftMouth.position.x)
-          .abs()
-          .toDouble();
+      double mouthWidth =
+          (rightMouth.position.x - leftMouth.position.x).abs().toDouble();
 
       // 입 높이 계산
-      double mouthHeight = (lowerLip.position.y - upperLip.position.y)
-          .abs()
-          .toDouble();
+      double mouthHeight =
+          (lowerLip.position.y - upperLip.position.y).abs().toDouble();
 
       // 입 모양 비율 계산 (높이/너비) - 값이 커질수록 입을 오무림
       double mouthRatio = mouthHeight / mouthWidth;
@@ -359,7 +376,7 @@ class HardModeController3 extends GetxController {
     FaceLandmark? rightMouth = face.landmarks[FaceLandmarkType.rightMouth];
     FaceLandmark? bottomMouth = face.landmarks[FaceLandmarkType.bottomMouth];
     FaceLandmark? upperMouth =
-    face.landmarks[FaceLandmarkType.noseBase]; // 코 기저부를 윗입술로 사용
+        face.landmarks[FaceLandmarkType.noseBase]; // 코 기저부를 윗입술로 사용
 
     if (leftMouth != null &&
         rightMouth != null &&
@@ -372,11 +389,11 @@ class HardModeController3 extends GetxController {
       print('Upper Mouth (Nose Base): ${upperMouth.position}');
 
       double mouthWidth =
-      (rightMouth.position.x.toDouble() - leftMouth.position.x.toDouble())
-          .abs();
+          (rightMouth.position.x.toDouble() - leftMouth.position.x.toDouble())
+              .abs();
       double mouthHeight =
-      (bottomMouth.position.y.toDouble() - upperMouth.position.y.toDouble())
-          .abs();
+          (bottomMouth.position.y.toDouble() - upperMouth.position.y.toDouble())
+              .abs();
 
       // 입 벌림 판단 기준 설정
       double ratio = mouthHeight / mouthWidth;
@@ -407,32 +424,38 @@ class HardModeController3 extends GetxController {
   //찡그리기
   bool _isFrowning(Face face) {
     FaceContour? leftEyebrowTop = face.contours[FaceContourType.leftEyebrowTop];
-    FaceContour? rightEyebrowTop = face.contours[FaceContourType
-        .rightEyebrowTop];
+    FaceContour? rightEyebrowTop =
+        face.contours[FaceContourType.rightEyebrowTop];
     FaceContour? leftEye = face.contours[FaceContourType.leftEye];
     FaceContour? rightEye = face.contours[FaceContourType.rightEye];
 
-    if (leftEyebrowTop != null && rightEyebrowTop != null &&
-        leftEye != null && rightEye != null) {
+    if (leftEyebrowTop != null &&
+        rightEyebrowTop != null &&
+        leftEye != null &&
+        rightEye != null) {
       // 1. 눈썹 위치 계산
-      double leftEyebrowY = leftEyebrowTop.points.map((p) => p.y.toDouble())
-          .reduce((a, b) => a + b) / leftEyebrowTop.points.length;
-      double rightEyebrowY = rightEyebrowTop.points.map((p) => p.y.toDouble())
-          .reduce((a, b) => a + b) / rightEyebrowTop.points.length;
+      double leftEyebrowY = leftEyebrowTop.points
+              .map((p) => p.y.toDouble())
+              .reduce((a, b) => a + b) /
+          leftEyebrowTop.points.length;
+      double rightEyebrowY = rightEyebrowTop.points
+              .map((p) => p.y.toDouble())
+              .reduce((a, b) => a + b) /
+          rightEyebrowTop.points.length;
 
       // 2. 눈 크기 계산
-      double leftEyeHeight = leftEye.points.map((p) => p.y.toDouble()).reduce((
-          a, b) => a > b ? a : b) -
-          leftEye.points.map((p) => p.y.toDouble()).reduce((a, b) =>
-          a < b
-              ? a
-              : b);
-      double rightEyeHeight = rightEye.points.map((p) => p.y.toDouble())
-          .reduce((a, b) => a > b ? a : b) -
-          rightEye.points.map((p) => p.y.toDouble()).reduce((a, b) =>
-          a < b
-              ? a
-              : b);
+      double leftEyeHeight = leftEye.points
+              .map((p) => p.y.toDouble())
+              .reduce((a, b) => a > b ? a : b) -
+          leftEye.points
+              .map((p) => p.y.toDouble())
+              .reduce((a, b) => a < b ? a : b);
+      double rightEyeHeight = rightEye.points
+              .map((p) => p.y.toDouble())
+              .reduce((a, b) => a > b ? a : b) -
+          rightEye.points
+              .map((p) => p.y.toDouble())
+              .reduce((a, b) => a < b ? a : b);
 
       // 3. 얼굴 전체 높이에 대한 눈썹 위치의 비율 계산
       double faceHeight = face.boundingBox.height.toDouble();
@@ -454,9 +477,9 @@ class HardModeController3 extends GetxController {
       print('Right Eye Height Ratio: $rightEyeHeightRatio');
 
       // 찡그림 판단
-      bool eyebrowsLowered = (leftEyebrowPositionRatio >
-          eyebrowPositionThreshold) &&
-          (rightEyebrowPositionRatio > eyebrowPositionThreshold);
+      bool eyebrowsLowered =
+          (leftEyebrowPositionRatio > eyebrowPositionThreshold) &&
+              (rightEyebrowPositionRatio > eyebrowPositionThreshold);
       bool eyesNarrowed = (leftEyeHeightRatio < eyeHeightThreshold) &&
           (rightEyeHeightRatio < eyeHeightThreshold);
 
