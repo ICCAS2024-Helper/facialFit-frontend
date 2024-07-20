@@ -30,6 +30,7 @@ class _StageClear4State extends State<StageClear4> {
     _playSound();
     _increaseCoin();
     _fetchUserCoins();
+    _completeStage(4); // 스테이지 4 완료 처리 호출
   }
 
   Future<void> _playSound() async {
@@ -86,6 +87,33 @@ class _StageClear4State extends State<StageClear4> {
         print('Failed to load user coins: ${response.statusCode}');
         print('Response body: ${response.body}');
       }
+    }
+  }
+
+  Future<void> _completeStage(int stageId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+    String? accessToken = prefs.getString('accessToken');
+
+    if (userId != null && accessToken != null) {
+      final url = Uri.parse('http://34.47.88.29:8082/api/users/$userId/stages/complete/$stageId');
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+        body: '',
+      );
+
+      if (response.statusCode == 200) {
+        print('Stage completed successfully.');
+      } else {
+        print('Failed to complete stage: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } else {
+      print('User ID or access token is missing.');
     }
   }
 

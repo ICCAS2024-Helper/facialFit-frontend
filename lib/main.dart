@@ -16,7 +16,7 @@ import 'package:SmileHelper/calendar/user_info_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/date_symbol_data_local.dart'; // 추가: 올바른 import
+import 'package:intl/date_symbol_data_local.dart';
 import 'calendar/calendar.dart';
 import 'game/result/stageclear1.dart';
 import 'game/result/stagefail1.dart';
@@ -24,10 +24,10 @@ import 'package:SmileHelper/game/story/start.dart';
 import 'package:SmileHelper/game/story/story_stage.dart';
 import 'package:SmileHelper/game/story/prolog.dart';
 import 'package:SmileHelper/game/bonus/bonus_game.dart';
-
+import 'package:SmileHelper/game/story/finish.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('ko_KR', ''); // Updated: Using an empty string
+  await initializeDateFormatting('ko_KR', '');
 
   runApp(MyApp());
 }
@@ -60,10 +60,7 @@ class MyApp extends StatelessWidget {
                   textStyle: TextStyle(color: Colors.black, fontSize: 16),
                 ),
                 headlineLarge: GoogleFonts.robotoMono(
-                  textStyle: TextStyle(
-                      color: Colors.black,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold),
+                  textStyle: TextStyle(color: Colors.black, fontSize: 32, fontWeight: FontWeight.bold),
                 ),
                 // Add other needed text styles
               ),
@@ -83,6 +80,7 @@ class MyApp extends StatelessWidget {
               //   transition: Transition.zoom,
               // ),
               GetPage(name: '/bonus', page: () => BonusGame()),
+              //GetPage(name: '/Splash', page: () => SplashScreen()),
             ],
             routes: {
               "/Login": (context) => LoginMain(),
@@ -96,7 +94,7 @@ class MyApp extends StatelessWidget {
               "/MyPage": (context) => MyPage(),
               "/Prolog": (context) => Prolog(),
               "/Story": (context) => StoryStage(),
-
+              "/Finish": (context) => FinishPage(),
               "/stageclear1": (context) => StageClear1(),
               "/stagefail1": (context) => StageFail(),
               "/Calendar": (context) => CalendarPage(),
@@ -108,5 +106,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-
 }
